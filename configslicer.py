@@ -1,6 +1,7 @@
 import os
 from QuickLayer import quicklayer
 
+
 class file:
 
     def __init__(self,file_cs):
@@ -280,90 +281,111 @@ class file:
             print("Error: Incorrect input data." + "\n" + "Info: BlockまたはIDの先頭に利用できない文字列が含まれています。")
             return(self.output)
 
-        
-        # Blockの検出
-        while True: # Dループ
+        if len(self.fileget) != 0:
 
-            # リスト切り出し
-            self.temp_a = self.write_temp[self.while_d].split("#")[0]
-
-            # ブロック判定
-            if "" == self.temp_a:
-                pass
-            elif "[" == self.temp_a[0] and "]" == self.temp_a[-1]:
-                self.temp_a = self.temp_a.replace("[", "")
-                self.temp_a = self.temp_a.replace("]", "")
-                self.blocklist.append(self.temp_a)
-
-            # break処理
-            if self.while_d == len(self.write_temp) - 1:
-                break
-            else:
-                self.while_d += 1
-
-
-        # 存在しないBlockか
-        if block_cs in self.blocklist:
-            # IDの値を更新/追加
-            while True: # Eループ
+            # Blockの検出
+            while True: # Dループ
 
                 # リスト切り出し
-                self.temp_a = self.write_temp[self.while_e].split("#")[0]
+                self.temp_a = self.write_temp[self.while_d].split("#")[0]
 
-                # Block/IDの判定と設定
-                if "[" == self.temp_a[0] and "]" == self.temp_a[-1]:
-                    self.temp_b = self.temp_a
-                    self.temp_b = self.temp_b.replace("[", "")
-                    self.temp_b = self.temp_b.replace("]", "")
-                    self.id_value = [""]
-                elif "=" in self.temp_a and self.temp_a.count("=") == 1:
-                    self.id_value = self.temp_a.split("=")
-                else:
+                # ブロック判定
+                if "" == self.temp_a:
                     pass
+                elif "[" == self.temp_a[0] and "]" == self.temp_a[-1]:
+                    self.temp_a = self.temp_a.replace("[", "")
+                    self.temp_a = self.temp_a.replace("]", "")
+                    self.blocklist.append(self.temp_a)
 
-                # 入力値と適合するか
-                if block_cs == self.temp_b and id_cs == self.id_value[0]:
+                # break処理
+                if self.while_d == len(self.write_temp) - 1:
+                    break
+                else:
+                    self.while_d += 1
 
-                    # コメントアウトがあるか
-                    if "#" in self.write_temp[self.while_e]:
-                        self.cmout = " " + self.write_temp[self.while_e][self.write_temp[self.while_e].find("#"):]
 
-                    self.write_temp[self.while_e] = id_cs + "=" + value_cs + self.cmout
+            # 存在しないBlockか
+            if block_cs in self.blocklist:
+                # IDの値を更新/追加
+                while True: # Eループ
 
-                # Blockはあっているが適合していない
-                elif block_cs == self.temp_b and id_cs != self.id_value[0]:
+                    # リスト切り出し
+                    self.temp_a = self.write_temp[self.while_e].split("#")[0]
 
-                    self.while_e_a = self.while_e + 1
-                    while True: # E_Aループ
-
-                        # リスト切り出し
-                        self.temp_c = self.write_temp[self.while_e_a].split("#")[0]
-
-                        # 判定
-                        if "=" in self.temp_c:
-                            break
-                        elif "" == self.temp_c:
-                            self.while_e_a += 1
-                        else:
-                            self.write_temp.insert(self.while_e_a, id_cs + "=" + value_cs)
-                            break
-
-                    if self.write_temp[self.while_e_a] == id_cs + "=" + value_cs:
-                        break
+                    # Block/IDの判定と設定
+                    if "" == self.temp_a:
+                        pass
+                    elif "[" == self.temp_a[0] and "]" == self.temp_a[-1]:
+                        self.temp_b = self.temp_a
+                        self.temp_b = self.temp_b.replace("[", "")
+                        self.temp_b = self.temp_b.replace("]", "")
+                        self.id_value = [""]
+                    elif "=" in self.temp_a and self.temp_a.count("=") == 1:
+                        self.id_value = self.temp_a.split("=")
                     else:
                         pass
 
-                else:
-                    pass
+                    # 入力値と適合するか
+                    if block_cs == self.temp_b and id_cs == self.id_value[0]:
 
-                # break処理
-                if self.while_e == len(self.write_temp) - 1:
-                    break
-                else:
-                    self.while_e += 1
+                        # コメントアウトがあるか
+                        if "#" in self.write_temp[self.while_e]:
+                            self.cmout = " " + self.write_temp[self.while_e][self.write_temp[self.while_e].find("#"):]
 
+                        self.write_temp[self.while_e] = id_cs + "=" + value_cs + self.cmout
+                        break
+
+                    # IDが未格納
+                    elif "" == self.id_value[0]:
+                        pass
+
+                    # Blockはあっているが適合していない
+                    elif block_cs == self.temp_b and id_cs != self.id_value[0]:
+
+                        self.while_e_a = self.while_e + 1
+                        while True: # E_Aループ
+
+                            # リスト切り出し
+                            if self.while_e_a >= len(self.write_temp) - 1:
+                                self.temp_c = "0"
+                            else:
+                                self.temp_c = self.write_temp[self.while_e_a].split("#")[0]
+
+                            # 判定
+                            if "=" in self.temp_c:
+                                break
+                            elif "" == self.temp_c:
+                                self.while_e_a += 1
+                            else:
+                                if self.temp_c == "0":
+                                    self.write_temp.append(id_cs + "=" + value_cs)
+                                    break
+                                else:
+                                    self.write_temp.insert(self.while_e_a, id_cs + "=" + value_cs)
+                                    break
+
+                        if self.write_temp[self.while_e_a] == id_cs + "=" + value_cs:
+                            break
+                        elif self.write_temp[-1] == id_cs + "=" + value_cs:
+                            break
+                        else:
+                            pass
+
+                    else:
+                        pass
+
+                    # break処理
+                    if self.while_e == len(self.write_temp) - 1:
+                        break
+                    else:
+                        self.while_e += 1
+
+            else:
+                self.write_temp.append("[" + block_cs + "]")
+                self.write_temp.append(id_cs + "=" + value_cs)
         else:
-            self.write_temp.append("[" + block_cs + "]", id_cs + "=" + value_cs)
+            self.write_temp.append("[" + block_cs + "]")
+            self.write_temp.append(id_cs + "=" + value_cs)
 
 
         # 書き込み前処理
@@ -398,235 +420,5 @@ class file:
 
         with open(self.file_cs, mode='w', encoding='utf-8') as f:
             f.write(self.writedata)
-        print(self.write_temp)
-'''
-
-    def write(self, block_cs=None, id_cs=None, value_cs=None, opt_cs="_=_"):
-
-        # 変数の初期化
-        self.blocklist = []
-        self.file_write = self.fileget.copy()
-
-        # 入力値が存在しない
-        if block_cs == None or id_cs == None or value_cs == None:
-            self.output = None
-            print("Error: Incorrect input data." + "\n" + "Info: 入力値がありません。")
-            return(self.output)
-
-        # 入力値の型変換
-        block_cs = str(block_cs)
-        id_cs = str(id_cs)
-        value_cs = str(value_cs)
-        opt_cs = str(opt_cs)
-
-        # 入力禁止文字の処理
-
-        # optに仕様外の文字列(エラー)
-        if opt_cs == "=" or opt_cs == "_=_" or opt_cs == ":" or opt_cs == "_:_":
-            pass
-        else:
-            self.output = None
-            print("Error: Incorrect input data." + "\n" + "Info: optの値が正しくありません。入力できる文字列は\"=\"or\"_=_\"or\":\"or\"_:_\"です。")
-            return(self.output)
-
-        # optの設定
-        if opt_cs == "=":
-            opt_cs = "="
-        elif opt_cs == "_=_":
-            opt_cs = " = "
-        elif opt_cs == ":":
-            opt_cs = ":"
-        elif opt_cs == "_:_":
-            opt_cs = " : "
-
-        self.file_writes = ""
-
-        # データの確認と変更
-        while True:
-            # Block適合
-            if "[" == self.file_write[self.while_d][0]:
-                self.file_writes = self.file_write[self.while_d].replace("[", "") # 仮処置
-                self.file_writes = self.file_write[self.while_d].replace("]", "")
-                self.blocklist.append(self.file_writes)
-
-            # ID適合
-            if block_cs == self.blocklist[-1] and id_cs == self.file_write[self.while_d].split("=")[0]:
-
-                # コメントアウト処理
-                if "#" in self.file_write[self.while_d]:
-                    self.cmout = " " + self.file_write[self.while_d][self.file_write[self.while_d].find("#"):]
-                else:
-                    self.cmout = ""
-
-                self.file_write[self.while_d] = id_cs + opt_cs + value_cs + self.cmout + self.cmout
-                break
-
-            # IDがない(新規ID)
-            elif block_cs == self.blocklist[-1]:
-
-                # コメントアウトを除いた次の行がブロックか/設定値の新規追加
-                self.while_d_a = self.while_d
-                while True:
-                    if "[" != self.file_write[self.while_d_a + 1][0] and "=" in self.file_write[self.while_d_a + 1]:
-                        break
-                    elif "[" == self.file_write[self.while_d_a + 1][0]: # D_Aループ
-                        self.file_write.insert(self.while_d + 1, block_cs + opt_cs + id_cs)
-                    elif "#" == self.file_write[self.while_d_a + 1][0]:
-                        self.while_d_a += 1
-                
-                if self.file_write[self.while_d + 1] == block_cs + opt_cs + id_cs:
-                    break
-                else:
-                    pass
-
-            if self.while_d == len(self.file_write) - 1:
-                break
-            else:
-                self.while_d += 1
-
-        # 新規ブロックの作成
-        if self.blocklist != block_cs:
-            self.file_write.append("[" + block_cs + "]")
-            self.file_write.append(id_cs + opt_cs + value_cs)
-
-        self.file_write = "\n".join(self.file_write)
-
-        print(self.file_write)
-
-        with open(self.file_cs, mode='w', encoding='utf-8') as f:
-            f.write(self.file_write)
-
-'''
-        
-
-'''
-            
-        # 書き込みデータ作成
-        while True: # Dループ
-            
-            # コメントアウトの摘出と削除
-            if "#" in self.fileget[self.while_d]:
-                # コメントアウトを登録
-                self.cmout = self.fileget[self.while_d][self.fileget[self.while_d].find("#"):]
-
-                # コメントアウトを削除
-                while True:
-                    print(self.fileget)
-                    if "#" not in self.fileget[self.while_d]:
-                        break
-                    else:
-                        self.delete = self.fileget[self.while_d][-1]
-                        self.fileget[self.while_d] = self.fileget[self.while_d].rstrip(self.delete)
-            else:
-                pass
-
-            # 空リストを削除
-            while True:
-                if "" in self.fileget:
-                    self.fileget.remove("")
-                    self.while_d -= 1
-                else:
-                    break
-
-            # Block/ID/コメントアウトの判定と書き込み用リストに登録
-            if "[" == self.fileget[self.while_d][0]:
-                self.fileget[self.while_d].replace("[", "")
-                self.fileget[self.while_d].replace("]", "")
-                if self.fileget[self.while_d] == self.conf_dict:
-                    self.blocklist.append(self.fileget[self.while_d])
-                    self.file_write.append(self.fileget[self.while_d])
-            elif "=" == self.fileget[self.while_d]:
-                pass
-            elif self.cmout != "":
-                pass    
-
-        # Break処理
-            if self.while_d == len(self.fileget) - 1:
-                break
-            else:
-                self.while_d += 1
-                
-
-        print(self.fileget)
 
 # C/https://github.com/Meziro039
-
-            # Block/IDの先端に利用できない文字が含まれているか。
-            while True:
-                if self.tempfile[self.while_b][0] == "[" and self.tempfile[self.while_b][1] in self.ngword:
-                    self.output = None
-                    print("Error: Incorrect block value." + "\n" + "Info: Blockの先端に利用できない文字が含まれています。")
-                    return(self.output)
-                else:
-                    pass
-                
-                if self.tempfile[self.while_b][0] != "[" and self.tempfile[self.while_b][0] in self.ngword:
-                    self.output = None
-                    print("Error: Incorrect ID value." + "\n" + "Info: IDの先端に利用できない文字が含まれています。")
-                    return(self.output)
-                else:
-                    pass
-
-                # break判定
-                if self.while_b == len(self.tempfile) - 1:
-                    break
-                else:
-                    self.while_b += 1
-            
-
-            # Blockの先端と末尾に"["と"]"があるか(不正な位置にないか)
-            while True:
-                if self.tempfile[self.while_c][0] == "[" and self.tempfile[self.while_c][-1] == "]" and self.tempfile[self.while_c].count("[") == 1 and self.tempfile[self.while_c].count("]") == 1:
-                    pass
-                elif "[" in self.tempfile[self.while_c] or "]" in self.tempfile[self.while_c]:
-                    self.output = None
-                    print("Error: Incorrect block value." + "\n" + "Info: Block記号(\"[\" or \"]\")の位置が不正または多く含まれています。")
-                    return(self.output)
-                else:
-                    pass
-
-                # break判定
-                if self.while_c == len(self.tempfile) - 1:
-                    break
-                else:
-                    self.while_c += 1
-
-            # "="が1つ以上含まれていないか/ブロック,コメントアウト,設定値以外の文字列が混じっていないか
-            while True:
-                if self.tempfile[self.while_d].count("=") > 1:
-                    self.output = None
-                    print("Error: Incorrect delimiter value." + "\n" + "Info: 設定値の区切り文字が多く含まれています。")
-                    return(self.output)
-                else:
-                    pass
-
-                # break判定
-                if self.while_d == len(self.tempfile) - 1:
-                    break
-                else:
-                    self.while_d += 1
-            # 
-
-        else:
-            pass
-
-        print(self.tempfile)
-
-        
-
-            # 誤ったデータのエラー処理
-            while True:
-
-            # 内容を辞書に登録
-            while True:
-
-        else:
-            pass
-
-        print(self.fileget)
-
-        
-
-'''
-
-# 入力のBlock/IDが存在しない
